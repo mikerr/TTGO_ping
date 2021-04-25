@@ -1,8 +1,9 @@
 
 #include <WiFi.h>
-#include <ESP32Ping.h>
+#include <ESP32Ping.h> // https://github.com/marian-craciunescu/ESP32Ping
 
 #include <TFT_eSPI.h> // Graphics and font library for ST7735 driver chip
+                      //https://github.com/Xinyuan-LilyGO/TTGO-T-Display
 #include <SPI.h>
 
 TFT_eSPI tft = TFT_eSPI();  // Invoke library, pins defined in User_Setup.h
