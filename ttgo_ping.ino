@@ -1,7 +1,6 @@
 
 #include <WiFi.h>
 #include <ESP32Ping.h> // https://github.com/marian-craciunescu/ESP32Ping
-
 #include <TFT_eSPI.h> // Graphics and font library for ST7735 driver chip
                       //https://github.com/Xinyuan-LilyGO/TTGO-T-Display
 #include <SPI.h>
@@ -11,21 +10,21 @@ TFT_eSPI tft = TFT_eSPI();  // Invoke library, pins defined in User_Setup.h
 const char* ssid     = "wifi";
 const char* password = "password";
 
-int y = 5;
+int y,MAXy;
 
 void printline (String message) {
-  tft.setCursor (12, y);
+  tft.setCursor (0, y);
   tft.print(message);
-  y += 10;
-  if (y > 128) {
+  y += 9;
+  if (y > MAXy) {
     y = 0;
     tft.fillScreen(TFT_BLACK);
   }
 }
 
 void clearline () {
-  y -= 10;
-  tft.fillRect(12,y,240,20,TFT_BLACK);
+  y -= 9;
+  tft.fillRect(0,y,240,20,TFT_BLACK);
 }
 
 String ip_to_string(IPAddress ip) {
@@ -34,11 +33,15 @@ String ip_to_string(IPAddress ip) {
   return (String(buf));
 }
 void setup() {
+int ROTATION = 0;
 
+  if (ROTATION == 0) MAXy = 240;
+  else MAXy = 128;
+  
   delay(10);
 
   tft.init();
-  tft.setRotation(1);
+  tft.setRotation(ROTATION);
   tft.fillScreen(TFT_BLACK);
   tft.setTextColor(TFT_WHITE);
   
@@ -55,20 +58,24 @@ void setup() {
     i += 10;
   }
 
-  IPAddress ip = WiFi.localIP();
-  
-  printline("WiFi connected with ip " + ip_to_string(ip));  
-
-  printline("Pinging ip range");
-
-  for (i=1;i<255;i++) {
-    ip[3] = i;
-    printline(ip_to_string(ip));
-    if(!Ping.ping(ip)) {
-        clearline();
-    }
-  }
+  IPAddress ip = WiFi.localIP(); 
+  printline("WiFi connected with ip ");
+  printline ( ip_to_string(ip));  
 }
 
 void loop() {
+  IPAddress ip = WiFi.localIP();
+
+  printline("Pinging ip range");
+  
+  for (int i=1;i<255;i++) {
+    ip[3] = i;
+    printline(ip_to_string(ip));
+    if(!Ping.ping(ip,1)) {
+        clearline();
+    }
+  }
+  delay(5 * 60 * 1000); // wait 5 minutes
+  y = 0;
+  tft.fillScreen(TFT_BLACK);
   }
