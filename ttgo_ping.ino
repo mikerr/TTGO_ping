@@ -33,12 +33,10 @@ String ip_to_string(IPAddress ip) {
   return (String(buf));
 }
 void setup() {
-int ROTATION = 0;
+int ROTATION;
 
   if (ROTATION == 0) MAXy = 240;
   else MAXy = 128;
-  
-  delay(10);
 
   tft.init();
   tft.setRotation(ROTATION);
@@ -49,18 +47,17 @@ int ROTATION = 0;
   
   WiFi.begin(ssid, password);
 
-  int i=0;
+  tft.setCursor (125, 5);
   while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-
-    tft.setCursor (120 + i, 5);
+    delay(r00);
     tft.print(".");
-    i += 10;
   }
 
   IPAddress ip = WiFi.localIP(); 
+  clearline();
   printline("WiFi connected with ip ");
-  printline ( ip_to_string(ip));  
+  printline ( ip_to_string(ip));
+    
 }
 
 void loop() {
